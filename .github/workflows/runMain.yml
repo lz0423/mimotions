@@ -1,20 +1,8 @@
-name: 手动触发刷步数
+name: 刷步数2
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-    inputs:
-      user:
-        description: '用户名'
-        required: true
-        default: ''
-      pwd:
-        description: '密码'
-        required: true
-        default: ''
+  schedule:
+    - cron: '15 12 * * *'
 
 jobs:
   build:
@@ -37,6 +25,6 @@ jobs:
       - name: 开始
         run: |
           pip3 install requests
-          user='${{ github.event.inputs.user }}'
-          passwd='${{ github.event.inputs.pwd }}'
+          user='${{ secrets.USER }}'
+          passwd='${{ secrets.PWD }}'
           python3 main.py ${user} ${passwd}

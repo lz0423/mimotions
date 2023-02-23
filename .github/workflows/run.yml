@@ -1,13 +1,11 @@
-name: 刷步数
+name: 手动触发无输入
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
-  # workflow_dispatch: # 手动触发
-  schedule:
-    - cron: 0 13 * * *
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,20 +13,21 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
-    - uses: actions/checkout@v2
-    - name: 初始化Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-    - name: 开始
-      run: |
-        pip install requests
-        user='${{ secrets.USER }}'
-        pwd='${{ secrets.PWD }}'
-        step='${{ secrets.STEP }}'
-        
-        python3 main.py <<EOF
-        ${user}
-        ${pwd}
-        ${step}
-        EOF
+      - name: Checkout codes
+        uses: actions/checkout@v2
+      - name: Update system and install zsh
+        run: |
+          sudo -E apt-get -qq update
+          sudo -E apt-get install zsh -y
+          
+      - name: 初始化Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+          
+      - name: 开始
+        run: |
+          pip3 install requests
+          user='${{ secrets.USER }}'
+          passwd='${{ secrets.PWD }}'
+          python3 main.py ${user} ${passwd}
